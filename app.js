@@ -21,7 +21,7 @@ app.get('/api', function (request, response) {
 /**
  * Seleciona todas as tarefas
  */
-app.get('/api/task', function (request, response) {
+app.get('/api/tasks', function (request, response) {
     taskController.list(function (result) {
         response.json(result);
     });
@@ -30,7 +30,7 @@ app.get('/api/task', function (request, response) {
 /**
  * Seleciona uma tarefa de acordo com o id
  */
-app.get('/api/task/:id', function (request, response) {
+app.get('/api/tasks/:id', function (request, response) {
     let id = request.params.id;
 
     taskController.get(id, function (result) {
@@ -41,13 +41,16 @@ app.get('/api/task/:id', function (request, response) {
 /**
  * Salva uma nova tarefa
  */
-app.post('/api/task', function (request, response) {
+app.post('/api/tasks', function (request, response) {
     let task = new Task();
     task.title = request.body.title;
     task.description = request.body.description;
-    task.notice_date = moment(request.body.notice_date).format();
-    task.priority = request.body.priority;
-    task.completion_date = request.body.completion_date;
+    let noticeDate = request.body.noticeDate;
+    if (noticeDate != undefined)
+        task.noticeDate = moment(noticeDate).format();
+    if (request.body.priority != undefined && request.body.priority != null)
+        task.priority = request.body.priority;
+    task.completionDate = request.body.completionDate;
 
     // Tratando as labels
     let labels = request.body.labels;
@@ -68,7 +71,7 @@ app.post('/api/task', function (request, response) {
 /**
  * Remove uma tarefa de acordo com o id
  */
-app.delete('/api/task/:id', function (request, response) {
+app.delete('/api/tasks/:id', function (request, response) {
     let id = request.params.id;
 
     taskController.delete(id, function (result) {
@@ -79,15 +82,18 @@ app.delete('/api/task/:id', function (request, response) {
 /**
  * Atualiza os dados da tarefa.
  */
-app.put('/api/task/:id', function (request, response) {
+app.put('/api/tasks/:id', function (request, response) {
     let task = new Task();
     task._id = request.params.id;
     task.title = request.body.title;
     task.description = request.body.description;
-    task.notice_date = moment(request.body.notice_date).format();
-    task.priority = request.body.priority;
+    let noticeDate = request.body.noticeDate;
+    if (noticeDate != undefined)
+        task.noticeDate = moment(noticeDate).format();
+    if (request.body.priority != undefined && request.body.priority != null)
+        task.priority = request.body.priority;
     task.isFinalized = request.body.isFinalized;
-    task.completion_date = request.body.completion_date;
+    task.completionDate = request.body.completionDate;
 
     // Tratando as labels
     let labels = request.body.labels;

@@ -10,8 +10,8 @@ var taskSchema = new Schema({
     description: { type: String, default: null },
     priority: { type: Number, default: 3 }, // Sets task priority: 1 for maximum priority, 2 medium priority, and 3 for normal
     labels: { type: Array, default: [] },
-    completion_date: { type: Date, default: null },
-    notice_date: { type: Date, default: null },
+    completionDate: { type: Date, default: null },
+    noticeDate: { type: Date, default: null },
     isFinalized: { type: Boolean, default: false }
 },
 {
