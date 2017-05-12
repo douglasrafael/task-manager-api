@@ -1,16 +1,17 @@
 # Task Manager API - *Gerenciado de tarefas a fazer*
-Operaçções HTTP atendidas: **GET, POST, PUT e DELETE.**
+Operações HTTP atendidas: **GET, POST, PUT e DELETE.**
 #### CRUD 
 ACTION | RESULT
 ----- | ----
-`GET /api/tasks` | Retorna lista com todos as tarefas 
+`GET /api/tasks` | Retorna lista com todas as tarefas 
 `GET /api/tasks/5915d054aceb6a1b2422a593` | Retorna uma terefa específica
 `POST /api/tasks` | Insere uma nova tarefa
 `PUT /api/tasks/5915d054aceb6a1b2422a593` | Atualiza a tarefa #5915d054aceb6a1b2422a593
 `DELETE /api/tasks/5915d054aceb6a1b2422a593` | Remove a tarefa #5915d054aceb6a1b2422a593
 
 > Os dados são retornados no formato json.
-Veja abaixo um exemplo do formato retornado: `GET /api/tasks/5915e7b1291d8a147874854e`
+Veja abaixo um exemplo do formato retornado:
+`GET /api/tasks/5915e7b1291d8a147874854e`
 
 ```json
 {
