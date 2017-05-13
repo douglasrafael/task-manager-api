@@ -3,6 +3,7 @@ const db = require('mongoose');
 const dbURL = 'mongodb://127.0.0.1/task-manager';
 
 db.connect(dbURL);
+db.Promise = global.Promise;
 
 db.connection.on('connected', function () {
   console.log('DB - Conexão padrão estabelecida com:', dbURL);

@@ -1,16 +1,15 @@
 const mongoose = require('mongoose');
-mongoose.Promise = Promise;
 const Schema = mongoose.Schema;
 
 /**
  * Criando o modelo da entidade task
  */
 var taskSchema = new Schema({
-    title: { type: String, required: true, trim: true },
+    title: { type: String, trim: true, required: [true, 'Campo título é obrigatório!'] },
     description: { type: String, default: null },
-    priority: { type: Number, default: 3 }, // Sets task priority: 1 for maximum priority, 2 medium priority, and 3 for normal
+    priority: { type: Number, default: 3 }, // 1 prioridade máxima, 2 média, 3 normal
     labels: { type: Array, default: [] },
-    completionDate: { type: Date, default: null },
+    completionDate: { type: Date, required: [true, 'Campo data para entrega é obrigatório!'] },
     noticeDate: { type: Date, default: null },
     isFinalized: { type: Boolean, default: false }
 },
