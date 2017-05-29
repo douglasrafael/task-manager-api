@@ -4,10 +4,10 @@ Operações HTTP atendidas: **GET, POST, PUT e DELETE.**
 ACTION | RESULT
 ----- | ----
 `GET /api/tasks` | Retorna lista com todas as tarefas 
-`GET /api/tasks/5915d054aceb6a1b2422a593` | Retorna uma terefa específica
+`GET /api/tasks/:_id` | Retorna uma terefa específica
 `POST /api/tasks` | Insere uma nova tarefa
-`PUT /api/tasks/5915d054aceb6a1b2422a593` | Atualiza a tarefa #5915d054aceb6a1b2422a593
-`DELETE /api/tasks/5915d054aceb6a1b2422a593` | Remove a tarefa #5915d054aceb6a1b2422a593
+`PUT /api/tasks/:_id` | Atualiza a tarefa #5915d054aceb6a1b2422a593
+`DELETE /api/tasks/:_id` | Remove a tarefa #5915d054aceb6a1b2422a593
 
 > Os dados são retornados no formato json.
 Veja abaixo um exemplo do formato retornado:
