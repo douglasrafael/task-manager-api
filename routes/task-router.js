@@ -57,8 +57,10 @@ router.delete('/tasks/:id', function (req, res, next) {
  * Atualiza uma tarefa na base de dados de acordo com o id.
  */
 router.put('/tasks/:id', function (req, res, next) {
-    // Tratando os labels antes de atualizar
-    req.body.labels = labelsToArray(req.body.labels);
+    if (typeof req.body.labels === 'string') {
+        // Tratando os labels antes de salvar
+        req.body.labels = labelsToArray(req.body.labels);
+    }
 
     Task.findByIdAndUpdate(req.params.id, req.body).then(function () {
         Task.findById(req.params.id).then(function (task) {
