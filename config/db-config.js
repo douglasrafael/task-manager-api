@@ -1,8 +1,7 @@
 
 const db = require('mongoose');
-const dbURL = 'mongodb://127.0.0.1/task-manager';
 
-db.connect(dbURL);
+db.connect(require('./config').dbURL);
 db.Promise = global.Promise;
 
 // db.connection.on('connected', function () {
@@ -27,3 +26,5 @@ process.on('SIGINT', function() {
     process.exit(0);
   });
 });
+
+module.exports = db;
