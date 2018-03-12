@@ -5,6 +5,9 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('./config/passport')(require('passport'));
+const fs = require('fs');
+const https = require('https');
+const forceSSL = require('express-force-ssl');
 
 // stating db
 const db = require('./config/db-config');
@@ -43,9 +46,24 @@ app.use('/api/users', require('./routes/user-router'));
 /**
  * Obter a porta do ambiente e armazenar no Express.
  */
-const port = process.env.PORT || '8080';
+const port = process.env.PORT || 443;
 app.set('port', port);
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+/**
+ * HTTPS
+ */
+const key = fs.readFileSync('./cert/server.key');
+const cert = fs.readFileSync('./cert/server.crt');
+
+const options = {
+  key: key,
+  cert: cert
+};
+
+// app.use(forceSSL);
+// create server https
+https.createServer(options, app).listen(port, function () {
+  // console.log('Node app HTTPS is running on port', port);
 });
+
+module.exports = app;

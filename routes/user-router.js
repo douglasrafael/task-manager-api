@@ -2,8 +2,8 @@
 
 const express = require('express');
 const jwt = require("jwt-simple");
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
 
 const passport = require("./../config/passport")(require('passport'));
 const config = require("./../config/config");
@@ -11,14 +11,16 @@ const User = require('./../models/user');
 
 const router = express.Router();
 
-const PATH_UPLOAD = './public/uploads/users';
-const upload = require('./../config/upload')({ filename: "avatar", localstorage: PATH_UPLOAD });
+const ctName = 'users';
+const upload = require('./../config/upload')({ filename: "avatar", collectionName: ctName });
 
+const conn = mongoose.connection;
+const gfs = Grid(conn.db);
 
 /**
  * Realiza upload da imagem do usuário
  */
-router.post('/upload/avatar', function (req, res, next) {
+router.post('/avatar', function (req, res) {
     upload.sendSingle(req, res, function (err) {
         if (err) return res.status(400).send(err);
 
@@ -27,15 +29,36 @@ router.post('/upload/avatar', function (req, res, next) {
 });
 
 /**
- * Remove do servidor a imagem do usuário de acordo com o nome da imagem
+ * Seleciona a imagem de acordo com o filename
  */
-router.delete('/upload/avatar/:filename', function (req, res, next) {
-    let fullpath = path.resolve(PATH_UPLOAD).concat('/', req.params.filename);
+router.get('/avatar/:filename', passport.authenticate(), function (req, res) {
+    gfs.findOne({ filename: req.params.filename, root: ctName }, function (err, file) {
+        if (err || !file) return res.status(404).send("File not found!");
 
-    fs.unlink(fullpath, function (err) {
-        if (err) return res.status(404).send(err);
+        let readStream = gfs.createReadStream({ filename: file.filename, root: ctName });
 
-        return res.status(200).end();
+        readStream.on('data', function (data) {
+            res.status(200).send({ file: 'data:'.concat(file.contentType, ';base64,', new Buffer(data).toString('base64')) });
+        });
+    });
+});
+
+/**
+ * Remove avatar do usuário de acordo com o filename
+ */
+router.delete('/avatar/:filename', passport.authenticate(), function (req, res) {
+    gfs.exist({ filename: req.params.filename, root: ctName }, function (err, found) {
+        if (err) return res.status(404).end();
+
+        if (found) {
+            gfs.remove({ filename: req.params.filename, root: ctName }, function (err) {
+                if (err) return res.status(404).end();
+
+                res.status(200).end();
+            });
+        } else {
+            res.status(404).send("No image found with that title");
+        }
     });
 });
 
@@ -43,8 +66,8 @@ router.delete('/upload/avatar/:filename', function (req, res, next) {
  * Seleciana um usuário de acordo com o id.
  */
 router.get('/', passport.authenticate(), function (req, res) {
-    if(!req.user) res.status(404).end();
-    
+    if (!req.user) res.status(404).end();
+
     res.status(200).send(req.user);
 });
 
@@ -68,8 +91,6 @@ router.post('/signup', function (req, res) {
  */
 router.post('/authenticate', function (req, res) {
     User.findOne({ email: req.body.email }).then(function (user) {
-        console.log('user: ', req.body);
-
         var msg = 'E-mail ou senha inválidos!';
         if (!user) {
             res.status(403).send({ error: msg });
@@ -92,7 +113,11 @@ router.post('/authenticate', function (req, res) {
  */
 router.delete('/', passport.authenticate(), function (req, res) {
     User.findByIdAndRemove(req.user._id).then(function (user) {
-        if(!user) return res.status(404).send(err);
+        if (user.avatar) {
+            gfs.remove({ filename: req.params.filename, root: ctName }, function (err) {
+                if (err) return res.status(404).send(err);
+            });
+        }
 
         res.status(200).send(user);
     }).catch(function (err) {
