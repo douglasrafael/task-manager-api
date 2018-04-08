@@ -15,11 +15,8 @@ Veja abaixo um exemplo do formato retornado:
 
 ```json
 {
-    "__v": 0,
-    "updated_at": "2017-05-12T16:49:53.522Z",
-    "created_at": "2017-05-12T16:49:53.522Z",
-    "title": "Minha primeira tarefa",
     "_id": "5915e7b1291d8a147874854e",
+    "title": "Minha primeira tarefa",
     "isFinalized": false,
     "noticeDate": null,
     "completionDate": "2017-05-22T00:00:00.000Z",
@@ -28,6 +25,8 @@ Veja abaixo um exemplo do formato retornado:
         "test"
     ],
     "priority": 1,
-    "description": "Descrição da tarefa"
+    "description": "Descrição da tarefa",
+    "updated_at": "2017-05-12T16:49:53.522Z",
+    "created_at": "2017-05-12T16:49:53.522Z"
 }
 ```
